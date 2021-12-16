@@ -52,7 +52,6 @@ jobs:
           push: true
           tags: | 
               ${{ secrets.DOCKER_HUB_USERNAME }}/sa-node-base:latest
-              ${{ secrets.DOCKER_HUB_USERNAME }}/sa-node-base:$VERSION
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/sa-node-base:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/sa-node-base:buildcache,mode=max
 
