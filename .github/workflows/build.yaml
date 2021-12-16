@@ -30,11 +30,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name : Docker Tags
-        run: |
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [ [ "${{ github.ref }}" == "refs/tags/"* ] ] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          [ "$VERSION" == "main" ] && VERSION=latest
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
