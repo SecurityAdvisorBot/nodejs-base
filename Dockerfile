@@ -16,5 +16,6 @@ RUN apt-get install -yq nodejs
 RUN node -v
 RUN npm -v
 RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y
+COPY docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD [ "node" ]
