@@ -29,32 +29,31 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v2
-      -
-        name: Login to Docker Hub
+      - name : Docker Tags
+        run: |
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          [ [ "${{ github.ref }}" == "refs/tags/"* ] ] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          [ "$VERSION" == "main" ] && VERSION=latest
+      - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      -
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      -
-        name: Build and push
+      - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: ./
           file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [ [ "${{ github.ref }}" == "refs/tags/"* ] ] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          [ "$VERSION" == "main" ] && VERSION=latest
           tags: | 
-                ${{ secrets.DOCKER_HUB_USERNAME }}/sa-node-base:latest
-                ${{ secrets.DOCKER_HUB_USERNAME }}/sa-node-base:$VERSION
+              ${{ secrets.DOCKER_HUB_USERNAME }}/sa-node-base:latest
+              ${{ secrets.DOCKER_HUB_USERNAME }}/sa-node-base:$GITHUB_SHA
+              ${{ secrets.DOCKER_HUB_USERNAME }}/sa-node-base:$VERSION
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/sa-node-base:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/sa-node-base:buildcache,mode=max
 
